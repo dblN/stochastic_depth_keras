@@ -108,7 +108,7 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
 
     _death_rate = K.variable(death_rate)
     train_phase = K.equal(K.learning_phase(), 1)
-    scale = K.switch(train_phase, 1, 1 - _death_rate)
+    scale = K.switch(train_phase, K.ones(1), K.ones(1) - _death_rate)
     conv = Lambda(lambda c: scale * c)(conv)
 
     out = merge([conv, x], mode="sum")
