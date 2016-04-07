@@ -8,7 +8,7 @@ np.random.seed(2 ** 10)
 from six.moves import range
 
 from keras.datasets import cifar10
-from keras.layers import Input, Dense, Layer, merge, Activation, Flatten
+from keras.layers import Input, Dense, Layer, merge, Activation, Flatten, Lambda
 from keras.layers.convolutional import Convolution2D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
@@ -106,11 +106,16 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
                      output_shape[2])
         x = Padding(pad_shape=pad_shape, axis=1)(x)
 
+    _death_rate = K.variable(death_rate)
+    train_phase = K.equal(K.learning_phase(), 1)
+    scale = K.switch(train_phase, 1, 1 - _death_rate)
+    conv = Lambda(lambda c: scale * c)(conv)
+
     out = merge([conv, x], mode="sum")
     out = Activation("relu")(out)
 
     gate = K.variable(1, dtype="uint8")
-    add_tables += [{"death_rate": 0., "gate": gate}]
+    add_tables += [{"death_rate": _death_rate, "gate": gate}]
     return Switch(gate)([out, x])
 
 
@@ -161,9 +166,9 @@ def open_all_gates():
 # setup death rate
 for i, tb in enumerate(add_tables):
     if death_mode == "uniform":
-        tb["death_rate"] = death_rate
+        K.set_value(tb["death_rate"], death_rate)
     elif death_mode == "lin_decay":
-        tb["death_rate"] = i / len(add_tables) * death_rate
+        K.set_value(tb["death_rate"], i / len(add_tables) * death_rate)
     else:
         raise
 
@@ -174,7 +179,7 @@ class GatesUpdate(Callback):
 
         rands = np.random.uniform(size=len(add_tables))
         for t, rand in zip(add_tables, rands):
-            if rand < t["death_rate"]:
+            if rand < K.get_value(t["death_rate"]):
                 K.set_value(t["gate"], 0)
 
     def on_epoch_end(self, epoch, logs={}):
