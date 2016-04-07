@@ -5,6 +5,10 @@ from __future__ import print_function
 import numpy as np
 np.random.seed(2 ** 10)
 
+# Prevent reaching to maximum recursion depth in `theano.tensor.grad`
+# import sys
+# sys.setrecursionlimit(2 ** 20)
+
 from six.moves import range
 
 from keras.datasets import cifar10
