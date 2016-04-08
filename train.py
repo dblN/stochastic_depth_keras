@@ -56,7 +56,7 @@ add_tables = []
 inputs = Input(shape=(img_channels, img_rows, img_cols))
 
 net = Convolution2D(16, 3, 3, border_mode="same")(inputs)
-net = BatchNormalization()(net)
+net = BatchNormalization(axis=1)(net)
 net = Activation("relu")(net)
 
 
@@ -65,10 +65,10 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
 
     nb_filter = output_shape[0]
     conv = Convolution2D(nb_filter, 3, 3, subsample=strides, border_mode="same")(x)
-    conv = BatchNormalization()(conv)
+    conv = BatchNormalization(axis=1)(conv)
     conv = Activation("relu")(conv)
     conv = Convolution2D(nb_filter, 3, 3, border_mode="same")(conv)
-    conv = BatchNormalization()(conv)
+    conv = BatchNormalization(axis=1)(conv)
 
     if strides[0] >= 2:
         x = AveragePooling2D(strides)(x)
