@@ -23,7 +23,7 @@ from keras.utils import np_utils
 import keras.backend as K
 
 
-batch_size = 16
+batch_size = 50  # train/test data size must be divisible by batch_size
 nb_classes = 10
 nb_epoch = 500
 N = 18
