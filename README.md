@@ -8,8 +8,7 @@ Original code is at https://github.com/yueatsprograms/Stochastic_Depth.
 
 1. Install theano following its instruction.
 2. Install Keras (I use new API at `keras-1` branch)
-
-```
+   ```
 $ cd keras
 $ git checkout keras-1
 $ python setup.py install
