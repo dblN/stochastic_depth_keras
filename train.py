@@ -23,7 +23,7 @@ from keras.utils import np_utils
 import keras.backend as K
 
 
-batch_size = 50  # train/test data size must be divisible by batch_size
+batch_size = 64
 nb_classes = 10
 nb_epoch = 500
 N = 18
@@ -74,11 +74,12 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
         x = AveragePooling2D(strides)(x)
 
     if (output_shape[0] - input_shape[0]) > 0:
-        pad_shape = (batch_size,
+        pad_shape = (1,
                      output_shape[0] - input_shape[0],
                      output_shape[1],
                      output_shape[2])
         padding = K.ones(pad_shape)
+        padding = K.repeat_elements(padding, K.shape(x)[0], axis=0)
         x = Lambda(lambda y: K.concatenate([y, padding], axis=1),
                    output_shape=output_shape)(x)
 
