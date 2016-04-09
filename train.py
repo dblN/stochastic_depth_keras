@@ -42,11 +42,6 @@ print(X_test.shape[0], 'test samples')
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 
-X_train -= X_train.mean(axis=0)
-X_train *= 1 / X_train.std(axis=0)
-X_test -= X_test.mean(axis=0)
-X_test *= 1 / X_test.std(axis=0)
-
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
@@ -165,9 +160,9 @@ class GatesUpdate(Callback):
 
 
 datagen = ImageDataGenerator(
-    featurewise_center=False,
+    featurewise_center=True,
     samplewise_center=False,
-    featurewise_std_normalization=False,
+    featurewise_std_normalization=True,
     samplewise_std_normalization=False,
     zca_whitening=False,
     rotation_range=0,
@@ -178,9 +173,9 @@ datagen = ImageDataGenerator(
 datagen.fit(X_train)
 
 test_datagen = ImageDataGenerator(
-    featurewise_center=False,
+    featurewise_center=True,
     samplewise_center=False,
-    featurewise_std_normalization=False,
+    featurewise_std_normalization=True,
     samplewise_std_normalization=False,
     zca_whitening=False,
     rotation_range=0,
