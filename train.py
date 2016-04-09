@@ -155,7 +155,7 @@ class GatesUpdate(Callback):
             if rand < K.get_value(t["death_rate"]):
                 K.set_value(t["gate"], 0)
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_batch_end(self, batch, logs={}):
         open_all_gates()  # for validation
 
 
@@ -190,4 +190,5 @@ model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size, shuffl
                     samples_per_epoch=X_train.shape[0],
                     nb_epoch=nb_epoch,
                     validation_data=test_datagen.flow(X_test, Y_test, batch_size=batch_size),
-                    nb_val_samples=X_test.shape[0])
+                    nb_val_samples=X_test.shape[0],
+                    callbacks=[GatesUpdate()])
