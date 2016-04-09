@@ -142,7 +142,7 @@ def open_all_gates():
 
 
 # setup death rate
-for i, tb in enumerate(add_tables):
+for i, tb in enumerate(add_tables, start=1):
     if death_mode == "uniform":
         K.set_value(tb["death_rate"], death_rate)
     elif death_mode == "lin_decay":
