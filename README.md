@@ -26,8 +26,7 @@ $ python setup.py install
 
 ## Results
 
-- Initial learning rate == 0.1
 - Number of layers == 50
 - (other configs are same as `train.py`)
 
-![results](https://cloud.githubusercontent.com/assets/10726958/14409972/45c9b22c-ff5d-11e5-99ab-ab3fd9069bdd.png)
+![results](https://cloud.githubusercontent.com/assets/10726958/14477064/904b573e-0146-11e6-865d-99fbd060486e.png)
