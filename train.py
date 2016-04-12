@@ -17,7 +17,8 @@ from keras.layers.convolutional import Convolution2D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.optimizers import SGD
-from keras.callbacks import Callback
+from keras.regularizers import l2
+from keras.callbacks import Callback, LearningRateScheduler
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
 import keras.backend as K
@@ -27,6 +28,8 @@ batch_size = 64
 nb_classes = 10
 nb_epoch = 500
 N = 18
+weight_decay = 1e-4
+lr_schedule = [0.5, 0.75]
 
 death_mode = "lin_decay"  # or uniform
 death_rate = 0.5
@@ -50,7 +53,7 @@ add_tables = []
 
 inputs = Input(shape=(img_channels, img_rows, img_cols))
 
-net = Convolution2D(16, 3, 3, border_mode="same")(inputs)
+net = Convolution2D(16, 3, 3, border_mode="same", W_regularizer=l2(weight_decay))(inputs)
 net = BatchNormalization(axis=1)(net)
 net = Activation("relu")(net)
 
@@ -59,10 +62,12 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
     global add_tables
 
     nb_filter = output_shape[0]
-    conv = Convolution2D(nb_filter, 3, 3, subsample=strides, border_mode="same")(x)
+    conv = Convolution2D(nb_filter, 3, 3, subsample=strides,
+                         border_mode="same", W_regularizer=l2(weight_decay))(x)
     conv = BatchNormalization(axis=1)(conv)
     conv = Activation("relu")(conv)
-    conv = Convolution2D(nb_filter, 3, 3, border_mode="same")(conv)
+    conv = Convolution2D(nb_filter, 3, 3,
+                         border_mode="same", W_regularizer=l2(weight_decay))(conv)
     conv = BatchNormalization(axis=1)(conv)
 
     if strides[0] >= 2:
@@ -124,10 +129,10 @@ for i in range(N - 1):
 pool = AveragePooling2D((8, 8))(net)
 flatten = Flatten()(pool)
 
-predictions = Dense(10, activation="softmax")(flatten)
+predictions = Dense(10, activation="softmax", W_regularizer=l2(weight_decay))(flatten)
 model = Model(input=inputs, output=predictions)
 
-sgd = SGD(lr=0.5, decay=1e-4, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0.1, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss="categorical_crossentropy")
 
 
@@ -157,6 +162,15 @@ class GatesUpdate(Callback):
 
     def on_batch_end(self, batch, logs={}):
         open_all_gates()  # for validation
+
+
+def schedule(epoch_idx):
+    if (epoch_idx + 1) < (nb_epoch * lr_schedule[0]):
+        return 0.1
+    elif (epoch_idx + 1) < (nb_epoch * lr_schedule[1]):
+        return 0.01
+
+    return 0.001
 
 
 datagen = ImageDataGenerator(
@@ -191,4 +205,4 @@ model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size, shuffl
                     nb_epoch=nb_epoch,
                     validation_data=test_datagen.flow(X_test, Y_test, batch_size=batch_size),
                     nb_val_samples=X_test.shape[0],
-                    callbacks=[GatesUpdate()])
+                    callbacks=[GatesUpdate(), LearningRateScheduler(schedule)])
