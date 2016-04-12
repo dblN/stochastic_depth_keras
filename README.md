@@ -17,6 +17,13 @@ $ python setup.py install
 3. Just run `python train.py`
 
 
+## Known Issues
+
+- Error related to maximum recursion depth
+ - When the network is deep, there happens error saying it reaches to maximum recursion depth.
+ - You can resolve this issue by using `sys.setrecursionlimit(max_recursion_depth)`. You should increase `max_recursion_depth` until you get no error (Increasing this value might cause segmentation fault if you don't have enough memory).
+
+
 ## Results
 
 - Initial learning rate == 0.1
