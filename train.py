@@ -78,7 +78,7 @@ def residual_drop(x, input_shape, output_shape, strides=(1, 1)):
                      output_shape[0] - input_shape[0],
                      output_shape[1],
                      output_shape[2])
-        padding = K.ones(pad_shape)
+        padding = K.zeros(pad_shape)
         padding = K.repeat_elements(padding, K.shape(x)[0], axis=0)
         x = Lambda(lambda y: K.concatenate([y, padding], axis=1),
                    output_shape=output_shape)(x)
