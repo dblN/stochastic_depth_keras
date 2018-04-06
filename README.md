@@ -1,5 +1,5 @@
 # Deep Networks with Stochastic Depth
-Rewriting code for "Deep Networks with Stochastic Depth" http://arxiv.org/abs/1603.09382 in Keras.
+Keras implementation for "Deep Networks with Stochastic Depth" http://arxiv.org/abs/1603.09382
 
 Original code is at https://github.com/yueatsprograms/Stochastic_Depth.
 
@@ -8,7 +8,8 @@ Original code is at https://github.com/yueatsprograms/Stochastic_Depth.
 
 1. Install [Theano](https://github.com/Theano/Theano) following its instruction.
 2. Install [Keras](https://github.com/fchollet/keras) (I use new API at `keras-1` branch)
-   ```
+
+```
 $ cd keras
 $ git checkout keras-1
 $ python setup.py install
@@ -20,8 +21,8 @@ $ python setup.py install
 ## Known Issues
 
 - Error related to maximum recursion depth
- - When the network is deep, there happens error saying it reaches to maximum recursion depth.
- - You can resolve this issue by using `sys.setrecursionlimit(max_recursion_depth)`. You should increase `max_recursion_depth` until you get no error (Increasing this value might cause segmentation fault if you don't have enough memory).
+  - When the network is deep, there happens error saying it reaches to maximum recursion depth.
+  - You can resolve this issue by using `sys.setrecursionlimit(max_recursion_depth)`. You should increase `max_recursion_depth` until you get no error (Increasing this value might cause segmentation fault if you don't have enough memory).
 
 
 ## Results
