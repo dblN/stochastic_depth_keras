@@ -1,7 +1,11 @@
+[Deprecated]
+No longer maintained
+(to catch up with the latest keras/theano/tensorflow but you'll get the idea of how to implement stochastic depth)
+
 # Deep Networks with Stochastic Depth
 Keras implementation for "Deep Networks with Stochastic Depth" http://arxiv.org/abs/1603.09382
 
-Original code is at https://github.com/yueatsprograms/Stochastic_Depth.
+Original code(in lua/torch) is at https://github.com/yueatsprograms/Stochastic_Depth.
 
 
 ## Usage
@@ -26,6 +30,7 @@ $ python setup.py install
 
 
 ## Results
+CIFAR10
 
 - Number of layers == 50
 - (other configs are same as `train.py`)
